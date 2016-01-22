@@ -59,7 +59,7 @@ class Spaceship {
 		weakOperator?.didFinishDockingProcedure(self)
 	}
 	
-	init(registrationIdentifier:String) {
+	init() {
 		print("Spaceship created.")
 		self.beacon = Beacon(spaceship: self)
 	}
@@ -78,7 +78,7 @@ class StationOperator {
 
 
 
-var ship: Spaceship? = Spaceship(registrationIdentifier: "XA24Y-55")
+var ship: Spaceship? = Spaceship()
 var pilot: Pilot? = Pilot()
 
 pilot!.implent =  Implent(pilot: pilot!)
