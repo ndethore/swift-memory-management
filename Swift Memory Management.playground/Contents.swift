@@ -1,88 +1,91 @@
+//: # Write memory efficient Swift code.
 //: Playground - noun: a place where people can play
 
-// Pilot
+/*
+** Pilot
+*/
 
-class License {
-	let identifier: String
-	unowned let pilot: Pilot // A license is issued for a specific pilot. Must be destroyed along with the pilot.
-//	let pilot: Pilot
+class Implent {
+	unowned let pilot: Pilot
 	
-	init(identifier: String, pilot: Pilot) {
-		self.identifier = identifier
+	init(pilot: Pilot) {
 		self.pilot = pilot
-		
-		print("License #\(self.identifier) created.");
+		print("Implent created.");
 	}
 	
-	deinit { print("License #\(identifier) detroyed.") }
+	deinit { print("Implent detroyed.") }
 	
 }
 
 
 class Pilot {
-	let name: String
-	var license: License? // A pilot don't necessarily have a license (yet).
-	weak var spaceship: Spaceship? // A pilot don't necessarilty have an spaceship.
-//	var spaceship: Spaceship?
 	
-	init(name: String) {
-		self.name = name
-		
-		print("Pilot named \(self.name) created.")
-	}
+	var implent: Implent?
+	weak var spaceship: Spaceship?
 	
-	deinit { print("Pilot named \(self.name) destroyed.") }
+	init() { print("Pilot created.") }
+	
+	deinit { print("Pilot destroyed.") }
 	
 }
 
 
-// Spaceship
 
-class RegistrationPlate {
-	let indentifier: String
-	unowned let spaceship: Spaceship // A registration plate is issued for a specific vehicle. Must be destroyed along with the associated vehicle.
-//	let spaceship: Spaceship
+/*
+** Spaceship
+*/
+
+class Beacon {
+	unowned let spaceship: Spaceship
 	
-	init(identifier: String, spaceship: Spaceship) {
-		self.indentifier = identifier
+	init(spaceship: Spaceship) {
 		self.spaceship = spaceship
-		
-		print("Registration plate #\(self.indentifier) created.")
+		print("Beacon created.")
 	}
 	
-	deinit { print("Registration plate #\(self.indentifier) destroyed.") }
+	deinit { print("Beacon destroyed.") }
 	
 }
-
 
 class Spaceship {
-	let model: String
-	var plate: RegistrationPlate! // A spacship must have a registration plate.
-	weak var pilot: Pilot? // A do not necessarily have a pilot.
-//	var pilot: Pilot?
-	
-	init(model: String, registrationIdentifier:String) {
-		self.model = model
+	var beacon: Beacon!
+	weak var pilot: Pilot?
+	var op: StationOperator?
+	lazy var dockingProcedure: Void -> Void = {
+		[unowned self, weak weakOperator = self.op!] in
 		
-		print("Spaceship #\(self.model) created.")
-		
-		self.plate = RegistrationPlate(identifier: registrationIdentifier, spaceship: self)
+		weakOperator?.didEngageDockingProcedure(self)
+		//do stuff...
+		weakOperator?.didFinishDockingProcedure(self)
 	}
 	
-	deinit { print("Spaceship #\(self.model) destroyed.") }
+	init(registrationIdentifier:String) {
+		print("Spaceship created.")
+		self.beacon = Beacon(spaceship: self)
+	}
+	
+	deinit { print("Spaceship destroyed.") }
 	
 }
 
+class StationOperator {
+	func didEngageDockingProcedure(spaceship: Spaceship) { }
+	func didFinishDockingProcedure(spaceship: Spaceship) { }
+}
 
-var ship: Spaceship? = Spaceship(model: "Galatic Razor", registrationIdentifier: "XA24Y-55")
-var pilot: Pilot? = Pilot(name: "Skywalker")
 
-pilot!.license =  License(identifier: "HTY4S5", pilot: pilot!)
+
+
+
+
+var ship: Spaceship? = Spaceship(registrationIdentifier: "XA24Y-55")
+var pilot: Pilot? = Pilot()
+
+pilot!.implent =  Implent(pilot: pilot!)
 pilot!.spaceship = ship
 ship!.pilot = pilot
 
+
 pilot = nil
 ship = nil
-
-
 
